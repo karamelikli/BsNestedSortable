@@ -3,16 +3,13 @@
  *
  * @package BsNestedSortable
  * @license MIT
- * @version 1.3
+ * @version 1.3.1
  * @author Huseyin Karamelikli <hakperest@gmail.com>
  */
 
-/**
- * 
- */
 
 function BsNestedSortable() {
-    var firstSerilized;
+    var initialSerilized;
     var UInestedSortable = {
         options: {
             depth: 30,
@@ -74,7 +71,7 @@ function BsNestedSortable() {
             this.jQuerySupplements();
             this.initSorting();
             if (this.serializeOption.serialize === true) {
-                firstSerilized = this.serialization().catObj;
+                initialSerilized = this.serialization().catObj;
             }
         },
         mapTheData(data) {
@@ -169,7 +166,7 @@ function BsNestedSortable() {
         },
         getSerialDiff() {
             const { options: { dataKeys: { id,parent,title,image,description } }, eventsOptions: { excludedObjElms }, serialize } = UInestedSortable;
-            let oldObj = firstSerilized, 
+            let oldObj = initialSerilized, 
                 y =  serialize().catObj, deleted = [], added = [], modified = [];
             if (oldObj == y) { return false; }
             oldObj.map(function (n) {

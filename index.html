@@ -153,7 +153,6 @@
                 eventsOptions: {
                     onComplete: function (_, newSer) { console.log("Completed"); console.log(newSer); },
                     onDelete: async function (_, newSer) {
-
                         await $("#proceeding-modal").modal({
                             backdrop: 'static',
                             keyboard: false,
@@ -181,6 +180,7 @@
                                 const returnVals = JSON.parse(data);
                                 console.log(returnVals.message);
                                 $("#proceeding-modal").modal("hide");
+                                initialSerilized=  newSer.theLastSerializ;
                             })
                             .catch((error, exception) => {
                                 $('#proceeding-modal').on('shown.bs.modal', function (e) {
