@@ -25,6 +25,7 @@
     margin-bottom: 0;
     position: relative;
     user-select: none;
+    list-style: none;
 }
 
 .tree-branch > .contents .branch-wrapper,.branch-wrapper {
@@ -74,33 +75,46 @@
 
 .branch-level-1 {
     margin-left: 0px;
+    list-style: none;
 }
 .branch-level-2 {
     margin-left: 30px;
+    list-style: none;
 }
 .branch-level-3 {
     margin-left: 60px;
+    list-style: none;
 }
 .branch-level-4 {
-    margin-left: 90px;
+    margin-left: 90px; 
+    list-style: none;
+
 }
+ 
+  
 .branch-level-5 {
     margin-left: 120px;
+    list-style: none;
 }
 .branch-level-6 {
     margin-left: 150px;
+    list-style: none;
 }
 .branch-level-7 {
     margin-left: 180px;
+    list-style: none;
 }
 .branch-level-8 {
     margin-left: 210px;
+    list-style: none;
 }
 .branch-level-9 {
     margin-left: 240px;
+    list-style: none;
 }
 .branch-level-10 {
     margin-left: 270px;
+    list-style: none;
 }
 
 .branch-level-1 .children-bus {
