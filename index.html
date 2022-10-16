@@ -25,7 +25,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <link href="./css/BsNestedSortable.css" rel="stylesheet" />
-    <script src="./js/BsNestedSortable.min.js"></script>
+    <script src="./js/BsNestedSortable.js"></script>
 </head>
 
 <body>
@@ -122,7 +122,6 @@
                         description: "#CatDescId",
                         image: "#image"
                     },
-
                     maxLevel: 10,
                     dataAttributes: {
                         id: 'id__',
@@ -149,64 +148,80 @@
                         allChildrenArr: "#allChildrenArr" // all of children
                     }
                 },
-
                 eventsOptions: {
                     onComplete: function (_, newSer) { console.log("Completed"); console.log(newSer); },
                     onDelete: async function (_, newSer) {
-                        await $("#proceeding-modal").modal({
-                            backdrop: 'static',
-                            keyboard: false,
-                        }).modal("show");
-
-                        function SendDeletdBranch() {
-                            return new Promise((resolve, reject) => {
-                                $.ajax({
-                                    url: "proceeding.php",
-                                    type: "POST",
-                                    data: {
-                                        deletedArray: newSer.deleted
-                                    },
-                                    success: function (data) {
-                                        resolve(data)
-                                    },
-                                    error: function (error, exception) {
-                                        reject(error, exception)
-                                    },
-                                })
-                            })
-                        }
-                        SendDeletdBranch()
-                            .then((data) => {
-                                const returnVals = JSON.parse(data);
-                                console.log(returnVals.message);
-                                $("#proceeding-modal").modal("hide");
-                                initialSerilized=  newSer.theLastSerializ;
-                            })
-                            .catch((error, exception) => {
+                        await $("#proceeding-modal").modal({backdrop: 'static',keyboard: false,}).modal("show");
+                         ajaxRequest({
+                            url: "proceeding.php",
+                            type: "POST",
+                            data: {
+                                deletedArray: newSer.deleted
+                            }
+                        }, function (data) {
+                            const returnVals = JSON.parse(data);
+                            console.log(returnVals.message);
+                            $("#proceeding-modal").modal("hide");
+                            initialSerilized = newSer.theLastSerializ;
+                        },
+                            function (error, exception) {
                                 $('#proceeding-modal').on('shown.bs.modal', function (e) {
                                     $("#proceeding-modal").modal("hide");
                                 });
                                 $("#proceeding-modal").modal("hide");
-                                let msg = '';
-                                if (error.status === 0) {
-                                    msg = 'Not connect.\n Verify Network.';
-                                } else if (error.status == 404) {
-                                    msg = 'Requested page not found. [404]';
-                                } else if (error.status == 500) {
-                                    msg = 'Internal Server Error [500].';
-                                } else if (exception === 'parsererror') {
-                                    msg = 'Requested JSON parse failed.';
-                                } else if (exception === 'timeout') {
-                                    msg = 'Time out error.';
-                                } else if (exception === 'abort') {
-                                    msg = 'Ajax request aborted.';
-                                } else {
-                                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                                }
-                                $('#errorDesc').html(msg);
-                                $("#proceeding-error").modal("show");
-                            })
+                            }
+                        )
 
+                        /*   function SendDeletdBranch() {
+                               return new Promise((resolve, reject) => {
+                                   $.ajax({
+                                       url: "proceeding.php",
+                                       type: "POST",
+                                       data: {
+                                           deletedArray: newSer.deleted
+                                       },
+                                       success: function (data) {
+                                           resolve(data)
+                                       },
+                                       error: function (error, exception) {
+                                           reject(error, exception)
+                                       },
+                                   })
+                               })
+                           }
+                           SendDeletdBranch()
+                               .then((data) => {
+                                   const returnVals = JSON.parse(data);
+                                   console.log(returnVals.message);
+                                   
+                                   $("#proceeding-modal").modal("hide");
+                                   initialSerilized=  newSer.theLastSerializ;
+                               })
+                               .catch((error, exception) => {
+                                   $('#proceeding-modal').on('shown.bs.modal', function (e) {
+                                       $("#proceeding-modal").modal("hide");
+                                   });
+                                   $("#proceeding-modal").modal("hide");
+                                   let msg = '';
+                                   if (error.status === 0) {
+                                       msg = 'Not connect.\n Verify Network.';
+                                   } else if (error.status == 404) {
+                                       msg = 'Requested page not found. [404]';
+                                   } else if (error.status == 500) {
+                                       msg = 'Internal Server Error [500].';
+                                   } else if (exception === 'parsererror') {
+                                       msg = 'Requested JSON parse failed.';
+                                   } else if (exception === 'timeout') {
+                                       msg = 'Time out error.';
+                                   } else if (exception === 'abort') {
+                                       msg = 'Ajax request aborted.';
+                                   } else {
+                                       msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                                   }
+                                   $('#errorDesc').html(msg);
+                                   $("#proceeding-error").modal("show");
+                               })
+   */
 
                     },
                     onEdit: function (_, newSer) { console.log("Edited"); console.log(newSer); },
@@ -238,11 +253,13 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content bg-danger text-white">
                 <div class="modal-body text-center">
-                    <h3 class="text-white mb-15" id="myEroorLabel"><i class="fa fa-exclamation-triangle"></i> ERROR!</h3>
+                    <h3 class="text-white mb-15" id="myEroorLabel"><i class="fa fa-exclamation-triangle"></i> ERROR!
+                    </h3>
                     <span>proceeding Failed.</span>
                     <p id="errorDesc"></p>
                     <p></p>
-                    <button type="button" class="btn btn-light close" data-dismiss="modal" data-bs-dismiss="modal">Ok</button>
+                    <button type="button" class="btn btn-light close" data-dismiss="modal"
+                        data-bs-dismiss="modal">Ok</button>
                 </div>
             </div>
         </div>
