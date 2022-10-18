@@ -17,7 +17,12 @@ There are some projects about sortable divs, and one of them is [treeSortable](h
 Download `BsNestedSortable.css` and `BsNestedSortable.min.js` files from this project and use them on your server. Use the following tags in **head** part of html.
 
 
-    <head><meta  charset="UTF-8"><meta  name="viewport"  contents="width=device-width, initial-scale=1.0">
+
+
+
+
+```html
+<head><meta  charset="UTF-8"><meta  name="viewport"  contents="width=device-width, initial-scale=1.0">
     <title>bootstrap Nested Sortable</title>
     <link  href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"  rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"  crossorigin="anonymous">
     <script  src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
@@ -28,66 +33,78 @@ Download `BsNestedSortable.css` and `BsNestedSortable.min.js` files from this pr
     <link  href="./css/BsNestedSortable.css"  rel="stylesheet"  />
     <script  src="./js/BsNestedSortable.js"></script>
     </head>
+```
+    
 In the body section following tags can be included:
 
-    <div  class="container">
-	    <div  class="row">
-		    <ul  id="tree"></ul>
-	    </div>
-    </div>
+ ```html
+ <div  class="container">
+	<div  class="row">
+	   <ul  id="tree"></ul>
+	</div>
+</div>
+```
+  
+
 You can change the id and other parts of the code as your need. The following codes should be included in the body section too.
 
-    <script>
-        const data = [
-            {
-                id: 1,
-                parent_id: 0,
-                title: 'Branch 1',
-                description: '<p>Test Desc.</p>',
-            },
-            {
-            id: 2,
-            parent_id: 1,
-            title: 'Branch 2',
-            img: 'images/profile.jpg'
-            },
-			            ];
-	    $(document).ready(function () {        
-	    $("#tree").BsNestedSortable();
-	    });
-	</script>
+```html
+<script>
+const data = [
+    {
+    id: 1,
+    parent_id: 0,
+    title: 'Branch 1',
+    description: '<p>Test Desc.</p>',
+    },
+    {
+    id: 2,
+    parent_id: 1,
+    title: 'Branch 2',
+    img: 'images/profile.jpg'
+    },
+       ];
+ $(document).ready(function () {        
+ $("#tree").BsNestedSortable();
+ });
+</script>
+```
 
 If you have yourself, data name, and keys, it can be done by changing the last code:
 
-     const myData = [ { myid: 1, myparent_id: 0, mytitle: 'Branch 1', mydesc: 'desc.', myimage:'a.jpg'  },]
-     $("#tree").BsNestedSortable(
-     {
-	     data: myData,
-	      options: {
-		      dataKeys: {
-	                       id: 'myid',
-	                       parent: 'myparent_id',
-	                       title: 'mytitle',
-	                       description: 'mydesc',
-	                       image: 'myimage'
-	                     },
-				    }
-     }
-     );
+```javascript
+const myData = [ { myid: 1, myparent_id: 0, mytitle: 'Branch 1', mydesc: 'desc.', myimage:'a.jpg'  },]
+$("#tree").BsNestedSortable(
+{
+ data: myData,
+  options: {
+   dataKeys: {
+       id: 'myid',
+       parent: 'myparent_id',
+       title: 'mytitle',
+       description: 'mydesc',
+       image: 'myimage'
+     },
+   }
+}
+);
+```
 Using your modals is available too. In this case, it can be defined in options as:
 
-    $("#tree").BsNestedSortable(
-    {
-	    options: {
-		    modal: {
-		    id: "#myModal",
-		    ModalDelete: "#myModalDelete",
-		    name: "#CatName",
-		    description: "#CatDescId",
-		    image: "#image"
-		    }
-    }
-    );
+```javascript
+ $("#tree").BsNestedSortable(
+ {
+  options: {
+   modal: {
+   id: "#myModal",
+   ModalDelete: "#myModalDelete",
+   name: "#CatName",
+   description: "#CatDescId",
+   image: "#image"
+   }
+ }
+ );
+```
 # Serialization
 The most important about sorting branches are using the results. Therefore this project aims to obtain complete output after each action. **serializeOption** can be used for this proposal. There are four different methods to get the results: 
 
@@ -110,22 +127,24 @@ The output of serialized values can be obtained as following formats simultaneou
 
 The following command can perform this serialization. 
 
-     $("#tree").BsNestedSortable(  
-     {
-	    serializeOption: {
-   			method: "JSON", // JSON alert console asVar
-   			call: "val", // html val text jquery .html() ,.val() or .text()
-   			outPuts: {
-   					catObj: "#catObj", // the places which will have all categories
-   					parentArr: "#parentArr", // parents array
-   					childrenArr: "#childrenArr", // children array
-   					Hierarchy: "#hierarchy", // expanded hierarchical array
-   					minHierarchy: "#minHierarchy", // minimized hierarchical array
-   					allParentsArr: "#allParentsArr", // all of parents
-   					allChildrenArr: "#allChildrenArr"  // all of children
-   					}
-   			}
-	 }
+```javascript     
+  $("#tree").BsNestedSortable(  
+  {
+  serializeOption: {
+	method: "JSON", // JSON alert console asVar
+	call: "val", // html val text jquery .html() ,.val() or .text()
+	outPuts: {
+		catObj: "#catObj", // the places which will have all categories
+		parentArr: "#parentArr", // parents array
+		childrenArr: "#childrenArr", // children array
+		Hierarchy: "#hierarchy", // expanded hierarchical array
+		minHierarchy: "#minHierarchy", // minimized hierarchical array
+		allParentsArr: "#allParentsArr", // all of parents
+		allChildrenArr: "#allChildrenArr"  // all of children
+			}
+	}
+}
+```
 
  ## Events
 The most critical issue for developers is saving the serialized results. In this regard **eventsOptions** may be useful for developers. *onComplete* ,   *onDelete* ,   *onEdit* and  *onAdd* are envisaged for this propose. All of the mentioned functions make an object as follows:
@@ -134,36 +153,38 @@ The most critical issue for developers is saving the serialized results. In this
 
 **EventsOptions** can modify user-defined functions. An example of a delete event is as follows:
 
-    $("#tree").BsNestedSortable(    
-     {
-      eventsOptions: {
-           onComplete: function (_, newSer) { console.log("Completed"); console.log(JSON.stringify(newSer)); },
-           onDelete: async function (_, newSer) {
-               await $("#proceeding-modal").modal({backdrop: 'static',keyboard: false,}).modal("show");
-                ajaxRequest({
-                   url: "proceeding.php",
-                   type: "POST",
-                   data: {
-                       deletedArray: newSer.deleted
-                   }
-               }, function (data) {
-                   const returnVals = JSON.parse(data);
-                   console.log(returnVals.message);
+```javascript 
+$("#tree").BsNestedSortable(    
+  {
+   eventsOptions: {
+     onComplete: function (_, newSer) { console.log("Completed"); console.log(JSON.stringify(newSer)); },
+     onDelete: async function (_, newSer) {
+       await $("#proceeding-modal").modal({backdrop: 'static',keyboard: false,}).modal("show");
+        ajaxRequest({
+          url: "proceeding.php",
+          type: "POST",
+          data: {
+            deletedArray: newSer.deleted
+          }
+       }, function (data) {
+           const returnVals = JSON.parse(data);
+           console.log(returnVals.message);
+           $("#proceeding-modal").modal("hide");
+           initialSerilized = newSer.theLastSerializ;
+       },
+           function (error, exception) {
+               $('#proceeding-modal').on('shown.bs.modal', function (e) {
                    $("#proceeding-modal").modal("hide");
-                   initialSerilized = newSer.theLastSerializ;
-               },
-                   function (error, exception) {
-                       $('#proceeding-modal').on('shown.bs.modal', function (e) {
-                           $("#proceeding-modal").modal("hide");
-                       });
-                       $("#proceeding-modal").modal("hide");
-                   }
-               )
-           },
-           onEdit: function (_, newSer) { console.log("Edited"); console.log(newSer); },
-           onAdd: function (_, newSer) { console.log("Added"); console.log(newSer); },
-       }
+               });
+               $("#proceeding-modal").modal("hide");
+           }
+       )
+     },
+     onEdit: function (_, newSer) { console.log("Edited"); console.log(newSer); },
+     onAdd: function (_, newSer) { console.log("Added"); console.log(newSer); },
     }
+ }
+```
  
 
  
@@ -182,7 +203,7 @@ The most critical issue for developers is saving the serialized results. In this
 |levelPrefix| branch-level| This prefix is added to the `li` element and create a level class. For example, for the level 1 branch the class would be `.branch-level-1`|
 |insertNewButton|`<button type="button" class="btn btn-primary btn-lg btn-block w-100">Insert New Branch</button>`|The button when the data is empty.
 |imagesUrlPrefix||Url of the images directory (http://localhost/images/)
-|icons| {tag: "i",remove: '<i class="far fa-trash-alt"></i>',edit: '<i class="far fa-edit"></i>',add: '<i class="far fa-plus-square"></i>', Class: 'fas',expand: 'fa-plus',collapse: 'fa-minus',}| Fontawsome was used for icons. Don't forget to change header part of HTML when it is modified.
+|icons| `{tag: "i",remove: '<i class="far fa-trash-alt"></i>',edit: '<i class="far fa-edit"></i>',add: '<i class="far fa-plus-square"></i>', Class: 'fas',expand: 'fa-plus',collapse: 'fa-minus',}`| Fontawsome was used for icons. Don't forget to change header part of HTML when it is modified.
 |maxLevel| 10 | The maximum level the tree could go. For example, if you set the `maxLevel` to `2` then the branch could have maximum `.branch-level-2`.|
 |depth| 30 | The Depth of a child branch. If you change the depth then you have to update the CSS of the `.branch-level-X` classes. See the `treeSortable.css` for more references.|
 |rootID|0|The root ID. This is crucial for reordering the data. Both string and numeric values are compatible.|
