@@ -4,7 +4,7 @@
  * @package BsNestedSortable
  * @copyright MIT
  * @license https://github.com/karamelikli/BsNestedSortable/blob/main/LICENSE
- * @version 1.3.2
+ * @version 1.3.3
  * @link https://github.com/karamelikli/BsNestedSortable
  */
 
@@ -89,9 +89,18 @@ function BsNestedSortable() {
             },
         },
         serializeOption: {
-            serialize: false,
+            serializeON: false,
             method: "JSON",
             call: "html",
+            outPuts: {
+                catObj: "#catObj", // the places which will have all categories
+                parentArr: "#parentArr", // parents array
+                childrenArr: "#childrenArr", // children array
+                Hierarchy: "#hierarchy", // expanded hierarchical array
+                minHierarchy: "#minHierarchy", // minimized hierarchical array
+                allParentsArr: "#allParentsArr", // all of parents
+                allChildrenArr: "#allChildrenArr" // all of children
+            }
         },
         eventsOptions: {
             onComplete: function () { },
@@ -103,7 +112,7 @@ function BsNestedSortable() {
         run() {
             this.jQuerySupplements();
             this.initSorting();
-            if (this.serializeOption.serialize === true) {
+            if (this.serializeOption.serializeON === true) {
                 initialSerilized = this.serialization().catObj;
             }
         },
@@ -198,7 +207,8 @@ function BsNestedSortable() {
             return { distanceX, distanceY };
         },
         getSerialDiff() {
-            const { options: { dataKeys: { id, parent, title, image, description } }, eventsOptions: { excludedObjElms }, serialize } = UInestedSortable;
+            const { options: { dataKeys: { id, parent, title, image, description } },serializeOption:{serializeON}, eventsOptions: { excludedObjElms }, serialize } = UInestedSortable;
+            if (serializeON == false) { return }
             let oldObj = initialSerilized,
                 y = serialize().catObj, deleted = [], added = [], modified = [];
             if (oldObj == y) { return false; }
@@ -330,8 +340,8 @@ function BsNestedSortable() {
             return { catObj, parentArr, childrenArr, minHierarchy, Hierarchy, allParentsArr, allChildrenArr }
         },
         serialize() {
-            const { serializeOption: { method, outPuts, serialize, call }, serialization } = UInestedSortable;
-            if (serialize == false) { return }
+            const { serializeOption: { method, outPuts, serializeON, call }, serialization } = UInestedSortable;
+            if (serializeON == false) { return }
 
             const serobjs = serialization();
             if (typeof outPuts !== "undefined") {
@@ -342,10 +352,13 @@ function BsNestedSortable() {
                                 case "JSON":
                                     const newOutput = JSON.stringify(value2)
                                     if (call == "html") {
-                                        $(value).html(newOutput)
+                                        $(value).html(newOutput);
                                     }
                                     if (call == "val") {
-                                        $(value).val(newOutput)
+                                        $(value).val(newOutput);
+                                    }
+                                    if (call == "text") {
+                                        $(value).text(newOutput);
                                     }
                                     break;
                                 case "console":
@@ -971,8 +984,7 @@ function BsNestedSortable() {
     return UInestedSortable;
 }
 jQuery.fn.BsNestedSortable = function (input) {
-    data = (input.hasOwnProperty("data")) ? input.data : data; // check data was put in the option or not! if not data was defined outside of input object
-
+    data = (typeof input =="object" && input.hasOwnProperty("data")) ? input.data : data; // check data was put in the option or not! if not data was defined outside of input object
     const sortable = new BsNestedSortable();
     let treeSelector = "";
     if ($(this[0]).attr("id")) {
@@ -982,16 +994,16 @@ jQuery.fn.BsNestedSortable = function (input) {
         treeSelector += "." + $.trim($(this[0]).attr("class")).replace(/\s/gi, ".");
     }
     sortable.options = { ...sortable.options, ...{ treeSelector: treeSelector } }
-    if (input.hasOwnProperty("options")) {
+    if (typeof input =="object" && input.hasOwnProperty("options")) {
         sortable.options = { ...sortable.options, ...input.options };
     }
     $(this[0]).html(sortable.MakeContents(data));
-    if (typeof input.serialize !== "undefined") {
-        sortable.serializeOption = { ...sortable.serializeOption, ...input.serialize, ...{ serialize: true } }
+    if (typeof input =="object" && typeof input.serializeOption !== "undefined") {
+        sortable.serializeOption = { ...sortable.serializeOption, ...input.serializeOption, ...{ serializeON: true } }
     }
-    if (typeof input.eventsOptions !== "undefined") {
+    if (typeof input =="object" && typeof input.eventsOptions !== "undefined") {
         // serialize before events
-        sortable.serializeOption = { ...sortable.serializeOption, ...{ serialize: true } }
+        sortable.serializeOption = { ...sortable.serializeOption, ...{ serializeON: true } }
         sortable.eventsOptions = { ...sortable.eventsOptions, ...input.eventsOptions }
     }
     sortable.run();
