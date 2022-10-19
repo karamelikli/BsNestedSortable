@@ -11,7 +11,7 @@ A drag and drop sort able list library.
 
 ### Motivation
 
-There are some projects about sortable divs, and one of them is [treeSortable](https://github.com/ahamed/treeSortable) project. But I need so many requisites like using Bootstrap and serialization. The utilized data should be reorganized; therefore, auto-leveling existing data were need. This library has sound new features which simplify its usage by developers or new starters.
+There are some projects about sortable divs, and one of them is [treeSortable](https://github.com/ahamed/treeSortable) project. But developers need so many requisites like using Bootstrap and serialization. The utilized data should be reorganized; therefore, auto-leveling existing data were need. This library has sound new features which simplify its usage by developers or new starters.
 
 ## Installation
 Download `BsNestedSortable.css` and `BsNestedSortable.min.js` files from this project and use them on your server. Use the following tags in **head** part of html.
