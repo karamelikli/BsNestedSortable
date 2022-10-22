@@ -3,7 +3,7 @@
 
   
 
-A drag and drop sort able list library.
+A drag and drop sort able list library. [Demo](https://karamelikli.github.io/BsNestedSortable/)
 
 ![bootstrap Nested Sortable 1](https://user-images.githubusercontent.com/6809318/196047512-07439a48-c4c1-4806-a111-67def7e92d65.png)
 
@@ -203,7 +203,7 @@ $("#tree").BsNestedSortable(
 |levelPrefix| branch-level| This prefix is added to the `li` element and create a level class. For example, for the level 1 branch the class would be `.branch-level-1`|
 |insertNewButton|`<button type="button" class="btn btn-primary btn-lg btn-block w-100">Insert New Branch</button>`|The button when the data is empty.
 |imagesUrlPrefix||Url of the images directory (http://localhost/images/)
-|icons| `{tag: "i",remove: '<i class="far fa-trash-alt"></i>',edit: '<i class="far fa-edit"></i>',add: '<i class="far fa-plus-square"></i>', Class: 'fas',expand: 'fa-plus',collapse: 'fa-minus',}`| Fontawsome was used for icons. Don't forget to change header part of HTML when it is modified.
+|icons| `{  remove: '<i class="far fa-trash-alt"></i>',edit: '<i class="far fa-edit"></i>',add: '<i class="far fa-plus-square"></i>',expand: '<i class="fas fa-plus"></i>',collapse: '<i class="fas fa-minus"></i>',}`| Fontawsome was used for icons. Don't forget to change header part of HTML when it is modified.
 |maxLevel| 10 | The maximum level the tree could go. For example, if you set the `maxLevel` to `2` then the branch could have maximum `.branch-level-2`.|
 |depth| 30 | The Depth of a child branch. If you change the depth then you have to update the CSS of the `.branch-level-X` classes. See the `treeSortable.css` for more references.|
 |rootID|0|The root ID. This is crucial for reordering the data. Both string and numeric values are compatible.|

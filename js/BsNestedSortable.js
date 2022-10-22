@@ -4,7 +4,7 @@
  * @package BsNestedSortable
  * @copyright MIT
  * @license https://github.com/karamelikli/BsNestedSortable/blob/main/LICENSE
- * @version 1.3.3
+ * @version 1.3.5
  * @link https://github.com/karamelikli/BsNestedSortable
  */
 
@@ -54,16 +54,16 @@ function BsNestedSortable() {
             childrenBusSelector: '.children-bus',
             collapseChildren: '.collapseChildren',
             levelPrefix: 'branch-level',
+            maxHeight:40, //px 
+            minHeight:10, // px
             insertNewButton: '<button type="button" class="btn btn-primary btn-lg btn-block w-100">Insert New Branch</button>',
             imagesUrlPrefix: "",
             icons: {
-                tag: "i",
                 remove: '<i class="far fa-trash-alt"></i>',
                 edit: '<i class="far fa-edit"></i>',
                 add: '<i class="far fa-plus-square"></i>',
-                Class: 'fas',
-                expand: 'fa-plus',
-                collapse: 'fa-minus',
+                expand: '<i class="fas fa-plus"></i>',
+                collapse: '<i class="fas fa-minus"></i>',
             },
 
             modal: {
@@ -436,7 +436,7 @@ function BsNestedSortable() {
                                 <span class="branch-title">${title}</span> 
                             </div>   
                             <div class="branch-desc">${descriptionTxt}</div>
-                            <div class="desc d-none"   >${description}</div>
+                            <div class="desc d-none" style="display:none"  >${description}</div>
                             <div class ="iconsDiv">
                                 <button type="button" class="button edit-Icon" title="Edit Branch">${edit}</button>
                                 <button type="button" class="button add-Icon" title="Add a new child">${add}</button>
@@ -479,7 +479,7 @@ function BsNestedSortable() {
                         $(this)
                             .removeClass(levelPrefix + '-' + level)
                             .addClass(levelPrefix + '-' + newLevel)
-                            .data(level, newLevel)
+                            .data("level", newLevel)
                             .attr(`data-level`, newLevel);
                     });
                 },
@@ -597,17 +597,17 @@ function BsNestedSortable() {
                     return $siblings;
                 },
                 addIcons() {
-                    const { options: { branchSelector, collapseChildren, icons: { tag, Class, collapse } } } = UInestedSortable;
+                    const { options: { branchSelector, collapseChildren, icons: {collapse } } } = UInestedSortable;
                     $(branchSelector).each(function () {
                         if ($(this).getChildren().length) {
-                            $(this).find(collapseChildren).html('<' + tag + ' class="' + Class + ' ' + collapse + '"></i>')
+                            $(this).find(collapseChildren).html( collapse );
                         }
                     }
                     );
                 },
                 calculateSiblingDistances() {
                     const {
-                        options: { branchSelector, branchPathSelector }, getDistance
+                        options: {maxHeight,minHeight, branchSelector, branchPathSelector }, getDistance
                     } = UInestedSortable;
 
                     $(branchSelector).each(function () {
@@ -622,27 +622,30 @@ function BsNestedSortable() {
                                 const distance2 = getDistance($(this).get(0), ThisParent.get(0));
                                 $sibling
                                     .find(branchPathSelector)
-                                    .css('height', `${Math.max(distance.distanceY + 15, 55)}px`);
+                                    .css('height', `${Math.max(distance.distanceY + minHeight, maxHeight)}px`);
                                 $(this).find(branchPathSelector)
-                                    .css('height', `${Math.max(distance2.distanceY + 15, 55)}px`);
+                                    .css('height', `${Math.max(distance2.distanceY + minHeight, maxHeight)}px`);
                             } else {
                                 const $nextBranch = $(this).next(branchSelector);
                                 const nextBranchLevel = $nextBranch.getBranchLevel() || 1;
                                 const isChild = $nextBranch.length > 0 && nextBranchLevel > level;
                                 if (isChild) {
-                                    $nextBranch.find(branchPathSelector).css('height', '55px');
+                                    $nextBranch.find(branchPathSelector).css('height', maxHeight+'px');
                                 }
                                 if ($nextBranch.length > 0 && nextBranchLevel < level) {
-                                    if ($(this).prevBranch().getBranchLevel() <= level) {
-                                        $(this).find(branchPathSelector).css('height', '85px');
+                                    if ($(this).prevBranch().getBranchLevel() < level) {
+                                        $(this).find(branchPathSelector).css('height', maxHeight+minHeight+ 'px');
+                                    }
+                                    if ($(this).prevBranch().getBranchLevel() == level) {
+                                        $(this).find(branchPathSelector).css('height', maxHeight+maxHeight+ 'px');
                                     }
                                 }
                                 if ($(this).prevBranch().getBranchLevel() < level) {
-                                    $(this).find(branchPathSelector).css('height', '85px');
+                                    $(this).find(branchPathSelector).css('height', maxHeight+minHeight+ 'px')
                                 }
                             }
                         } else {
-                            $(this).find(branchPathSelector).hide();
+                            $(this).find(branchPathSelector).hide() ;                           
                         }
                     });
                 },
@@ -665,14 +668,14 @@ function BsNestedSortable() {
                 },
                 collapseThis(isChild = false) {
                     const {
-                        options: { treeSelector, branchSelector, icons: { collapse, expand, Class } },
+                        options: { treeSelector, branchSelector, icons: { collapse, expand } },
                     } = UInestedSortable;
                     const $branch = $(this).closest(`${treeSelector} ${branchSelector}`);
-                    const $collapse = $branch.find(".collapseChildren ." + Class);
-                    if ($collapse.hasClass(expand)) {
-                        if (!isChild) { $collapse.removeClass(expand).addClass(collapse) }
+                    const $collapse = $branch.find(".collapseChildren" );
+                    if ($collapse.hasClass("expandIcon")) {
+                        if (!isChild) { $collapse.removeClass("expandIcon").addClass("collapseIcon").html(collapse) }
                     } else {
-                        if (!isChild) { $collapse.removeClass(collapse).addClass(expand) }
+                        if (!isChild) { $collapse.removeClass("collapseIcon").addClass("expandIcon").html(expand) }
                     }
                     const branchVisibility = $branch.getChildren().is(":visible");
                     if (!isChild) {
@@ -686,10 +689,10 @@ function BsNestedSortable() {
                     $branch.getChildren().each(function () {
                         if (branchVisibility) {
                             $(this).hide();
-                            if (!isChild) { $branch.attr("data-visibility", "hide"); }
+                            if (!isChild) { $branch.attr("data-visibility", "hide");}
                         } else {
                             $(this).show();
-                            if (!isChild) { $branch.attr("data-visibility", "show"); }
+                            if (!isChild) { $branch.attr("data-visibility", "show");  }
                         }
                         if ($(this).getChildren().length) {
                             if ($(this).getChildren().is(":visible") == branchVisibility) {
@@ -702,11 +705,12 @@ function BsNestedSortable() {
                 },
                 updateCollapse() {
                     const {
-                        options: { icons: { collapse, expand, Class } },
+                        options: { icons: {  expand } },
                     } = UInestedSortable;
-                    const $collapse = $(this).find(".collapseChildren ." + Class);
+                    const $collapse = $(this).find(".collapseChildren");
                     if ($(this).attr("data-collapsed") == "hide") {
-                        $collapse.removeClass(collapse).addClass(expand);
+                        $collapse.removeClass("collapseIcon").addClass("expandIcon").html(expand)  ;
+                        console.log($collapse)
                     }
                 }
             });
@@ -858,12 +862,7 @@ function BsNestedSortable() {
                     const level = ui.item.getBranchLevel();
                     ui.placeholder.updateBranchLevel(level);
                     originalIndex = ui.item.index();
-                    /* const branchVisibility = ui.item.next().getDescendants().is(":visible");
-                     if (branchVisibility == false) {
-                         ui.item.addClass("ThisWasHidden")
-                         ui.item.next().getDescendants().show()
-                     }
- */
+
                     originalLevel = level;
                     childrenBus = ui.item.find(childrenBusSelector);
                     childrenBus.append(ui.item.next().getDescendants());
@@ -958,7 +957,6 @@ function BsNestedSortable() {
                     children.shiftBranchLevel(currentLevel - originalLevel);
 
                     $(this).addIcons();
-                    $(this).calculateSiblingDistances();
                     updateBranchZIndex();
 
                     const $parent = ui.item.getParent();
@@ -976,6 +974,7 @@ function BsNestedSortable() {
                             $(this).updateCollapse()
                         })
                     }
+                    $(this).calculateSiblingDistances();
                 },
             });
         },
@@ -985,7 +984,7 @@ function BsNestedSortable() {
 }
 jQuery.fn.BsNestedSortable = function (input) {
     data = (typeof input =="object" && input.hasOwnProperty("data")) ? input.data : data; // check data was put in the option or not! if not data was defined outside of input object
-    const sortable = new BsNestedSortable();
+    const nSortable = new BsNestedSortable();
     let treeSelector = "";
     if ($(this[0]).attr("id")) {
         treeSelector += "#" + $(this[0]).attr("id");
@@ -993,19 +992,19 @@ jQuery.fn.BsNestedSortable = function (input) {
     if ($(this[0]).attr("class")) {
         treeSelector += "." + $.trim($(this[0]).attr("class")).replace(/\s/gi, ".");
     }
-    sortable.options = { ...sortable.options, ...{ treeSelector: treeSelector } }
+    nSortable.options = { ...nSortable.options, ...{ treeSelector: treeSelector } }
     if (typeof input =="object" && input.hasOwnProperty("options")) {
-        sortable.options = { ...sortable.options, ...input.options };
+        nSortable.options = { ...nSortable.options, ...input.options };
     }
-    $(this[0]).html(sortable.MakeContents(data));
+    $(this[0]).html(nSortable.MakeContents(data));
     if (typeof input =="object" && typeof input.serializeOption !== "undefined") {
-        sortable.serializeOption = { ...sortable.serializeOption, ...input.serializeOption, ...{ serializeON: true } }
+        nSortable.serializeOption = { ...nSortable.serializeOption, ...input.serializeOption, ...{ serializeON: true } }
     }
     if (typeof input =="object" && typeof input.eventsOptions !== "undefined") {
         // serialize before events
-        sortable.serializeOption = { ...sortable.serializeOption, ...{ serializeON: true } }
-        sortable.eventsOptions = { ...sortable.eventsOptions, ...input.eventsOptions }
+        nSortable.serializeOption = { ...nSortable.serializeOption, ...{ serializeON: true } }
+        nSortable.eventsOptions = { ...nSortable.eventsOptions, ...input.eventsOptions }
     }
-    sortable.run();
+    nSortable.run();
     return this;
 }

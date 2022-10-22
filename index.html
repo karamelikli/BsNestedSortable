@@ -19,19 +19,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
         integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+              rel="stylesheet"> -->
 
 
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+    <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+    <script src="./js/jquery-ui.js"></script>
     <link href="./css/BsNestedSortable.min.css" rel="stylesheet" />
-    <script src="./js/BsNestedSortable.min.js"></script>
+    <script src="./js/BsNestedSortable.js"></script>
 </head>
 
 <body>
     <div class="container">
         <div class="row">
+            <p></p>
             <ul id="tree"></ul>
         </div>
     </div>
@@ -111,7 +114,7 @@
 
         $(document).ready(function () {
             const input = {
-                data: myData,// {}, myData
+                data: myData, // {}, myData
                 options: {
                     modal: {
                         id: "#myModal",
@@ -131,6 +134,12 @@
                         title: 'title',
                         description: 'description',
                         image: 'img'
+                    }, icons: {
+                        remove: '<i class="material-icons">delete</i>',
+                        edit: '<i class="material-icons">edit</i>',
+                        add: '<i class="material-icons">add_circle_outline</i>',
+                        expand: '<i class="material-icons">add</i>',
+                        collapse: '<i class="material-icons">remove</i>',
                     },
                 },
                 serializeOption: {
@@ -147,10 +156,13 @@
                     }
                 },
                 eventsOptions: {
-                    onComplete: function (_, newSer) { console.log("Completed"); console.log(JSON.stringify(newSer)); },
+                    onComplete: function (_, newSer) {
+                        console.log("Completed");
+                        console.log(JSON.stringify(newSer));
+                    },
                     onDelete: async function (_, newSer) {
-                        await $("#proceeding-modal").modal({backdrop: 'static',keyboard: false,}).modal("show");
-                         ajaxRequest({
+                        await $("#proceeding-modal").modal({ backdrop: 'static', keyboard: false, }).modal("show");
+                        ajaxRequest({
                             url: "proceeding.php",
                             type: "POST",
                             data: {
@@ -171,59 +183,63 @@
                         )
 
                         /*   function SendDeletdBranch() {
-                               return new Promise((resolve, reject) => {
-                                   $.ajax({
-                                       url: "proceeding.php",
-                                       type: "POST",
-                                       data: {
-                                           deletedArray: newSer.deleted
-                                       },
-                                       success: function (data) {
-                                           resolve(data)
-                                       },
-                                       error: function (error, exception) {
-                                           reject(error, exception)
-                                       },
-                                   })
-                               })
-                           }
-                           SendDeletdBranch()
-                               .then((data) => {
-                                   const returnVals = JSON.parse(data);
-                                   console.log(returnVals.message);
-                                   
-                                   $("#proceeding-modal").modal("hide");
-                                   initialSerilized=  newSer.theLastSerializ;
-                               })
-                               .catch((error, exception) => {
-                                   $('#proceeding-modal').on('shown.bs.modal', function (e) {
-                                       $("#proceeding-modal").modal("hide");
-                                   });
-                                   $("#proceeding-modal").modal("hide");
-                                   let msg = '';
-                                   if (error.status === 0) {
-                                       msg = 'Not connect.\n Verify Network.';
-                                   } else if (error.status == 404) {
-                                       msg = 'Requested page not found. [404]';
-                                   } else if (error.status == 500) {
-                                       msg = 'Internal Server Error [500].';
-                                   } else if (exception === 'parsererror') {
-                                       msg = 'Requested JSON parse failed.';
-                                   } else if (exception === 'timeout') {
-                                       msg = 'Time out error.';
-                                   } else if (exception === 'abort') {
-                                       msg = 'Ajax request aborted.';
-                                   } else {
-                                       msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                                   }
-                                   $('#errorDesc').html(msg);
-                                   $("#proceeding-error").modal("show");
-                               })
-   */
+                         return new Promise((resolve, reject) => {
+                         $.ajax({
+                         url: "proceeding.php",
+                         type: "POST",
+                         data: {
+                         deletedArray: newSer.deleted
+                         },
+                         success: function (data) {
+                         resolve(data)
+                         },
+                         error: function (error, exception) {
+                         reject(error, exception)
+                         },
+                         })
+                         })
+                         }
+                         SendDeletdBranch()
+                         .then((data) => {
+                         const returnVals = JSON.parse(data);
+                         console.log(returnVals.message);
+                         
+                         $("#proceeding-modal").modal("hide");
+                         initialSerilized=  newSer.theLastSerializ;
+                         })
+                         .catch((error, exception) => {
+                         $('#proceeding-modal').on('shown.bs.modal', function (e) {
+                         $("#proceeding-modal").modal("hide");
+                         });
+                         $("#proceeding-modal").modal("hide");
+                         let msg = '';
+                         if (error.status === 0) {
+                         msg = 'Not connect.\n Verify Network.';
+                         } else if (error.status == 404) {
+                         msg = 'Requested page not found. [404]';
+                         } else if (error.status == 500) {
+                         msg = 'Internal Server Error [500].';
+                         } else if (exception === 'parsererror') {
+                         msg = 'Requested JSON parse failed.';
+                         } else if (exception === 'timeout') {
+                         msg = 'Time out error.';
+                         } else if (exception === 'abort') {
+                         msg = 'Ajax request aborted.';
+                         } else {
+                         msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                         }
+                         $('#errorDesc').html(msg);
+                         $("#proceeding-error").modal("show");
+                         })
+                         */
 
                     },
-                    onEdit: function (_, newSer) { console.log("Edited"); console.log(newSer); },
-                    onAdd: function (_, newSer) { console.log("Added"); console.log(newSer); },
+                    onEdit: function (_, newSer) {
+                        console.log("Edited"); console.log(newSer);
+                    },
+                    onAdd: function (_, newSer) {
+                        console.log("Added"); console.log(newSer);
+                    },
                 }
             }
 
@@ -287,8 +303,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel">Custom sized Modal</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i
-                            class="bi bi-x-lg"></i></button>
+                    <button type="button" class="close" data-bs-dismiss="modal" data-dismiss="modal"
+                        aria-label="Close"><i class="bi bi-x-lg"></i></button>
                 </div>
                 <div class="modal-body">
                     <div id="test"></div>
@@ -316,8 +332,10 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn btn-primary submit" data-dismiss="modal">OK</button>
-                    <button type="button" class="btn btn-orange close" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn btn-primary submit" data-dismiss="modal"
+                        data-bs-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-orange close" data-dismiss="modal"
+                        data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -328,7 +346,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="IdOfDelete" />
@@ -337,7 +355,8 @@
                     <p class="text-secondary"><small>If you don't save, your changes will be lost.</small></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-secondary close" data-dismiss="modal"
+                        data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary Delete">Delete</button>
                 </div>
             </div>
@@ -348,7 +367,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Attention</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="IdOfDelete" />
@@ -358,7 +377,8 @@
                     <p class="text-secondary"><small>You have to delete this branch' childeren first.</small></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">OK</button>
+                    <button type="button" class="btn btn-secondary close" data-dismiss="modal"
+                        data-bs-dismiss="modal">OK</button>
 
                 </div>
             </div>
