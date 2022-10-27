@@ -113,6 +113,40 @@
         ];
 
         $(document).ready(function () {
+            const myAjaxRequest = async function (obj, type, url = "proceeding.php") {            
+                await $("#proceeding-modal").modal({ backdrop: 'static', keyboard: false, }).modal("show");              
+                let theResult = false;
+                await $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        postArray: obj,
+                        type: type
+                    },
+                    success:   function (data) {
+                        const returnVals = JSON.parse(data);
+                        console.log(returnVals.message);
+                        $("#proceeding-modal").modal("hide");
+                        if ($("#proceeding-modal").css("display") == "none") {
+                            $('#proceeding-modal').on('shown.bs.modal', function (e) {
+                                $("#proceeding-modal").modal("hide");
+                            })
+                        }
+                        theResult = true;
+                    },
+                    error:   function (error, exception) {
+                        $("#proceeding-modal").modal("hide");
+                        if ($("#proceeding-modal").css("display") == "none") {
+                            $('#proceeding-modal').on('shown.bs.modal', function (e) {
+                                $("#proceeding-modal").modal("hide");
+                            })
+                        }
+                        theResult = false;
+                        errorAlert(error, exception);
+                    },
+                })
+                return theResult;
+            }
             const input = {
                 data: myData, // {}, myData
                 options: {
@@ -150,89 +184,55 @@
                     }
                 },
                 eventsOptions: {
-                    onComplete: function (_, newSer) {
+                    onComplete: async function (_, newSer) {
+                        await $("#proceeding-modal").modal({ backdrop: 'static', keyboard: false, }).modal("show");
+                        function timeout(ms) {
+                            return new Promise(resolve => setTimeout(resolve, ms));
+                        }
+                        await timeout(500);
                         console.log("Completed");
                         console.log(JSON.stringify(newSer));
-                    },
-                    onDelete: async function (_, newSer) {
-                        await $("#proceeding-modal").modal({ backdrop: 'static', keyboard: false, }).modal("show");
-                        ajaxRequest({
-                            url: "proceeding.php",
-                            type: "POST",
-                            data: {
-                                deletedArray: newSer.deleted
-                            }
-                        }, function (data) {
-                            const returnVals = JSON.parse(data);
-                            console.log(returnVals.message);
-                            $("#proceeding-modal").modal("hide");
-                            initialSerilized = newSer.theLastSerializ;
-                        },
-                            function (error, exception) {
-                                $('#proceeding-modal').on('shown.bs.modal', function (e) {
-                                    $("#proceeding-modal").modal("hide");
-                                });
+                        $("#proceeding-modal").modal("hide");
+                        if ($("#proceeding-modal").css("display") == "none") {
+                            $('#proceeding-modal').on('shown.bs.modal', function (e) {
                                 $("#proceeding-modal").modal("hide");
-                            }
-                        )
-
-                        /*   function SendDeletdBranch() {
-                         return new Promise((resolve, reject) => {
-                         $.ajax({
-                         url: "proceeding.php",
-                         type: "POST",
-                         data: {
-                         deletedArray: newSer.deleted
-                         },
-                         success: function (data) {
-                         resolve(data)
-                         },
-                         error: function (error, exception) {
-                         reject(error, exception)
-                         },
-                         })
-                         })
-                         }
-                         SendDeletdBranch()
-                         .then((data) => {
-                         const returnVals = JSON.parse(data);
-                         console.log(returnVals.message);
-                         
-                         $("#proceeding-modal").modal("hide");
-                         initialSerilized=  newSer.theLastSerializ;
-                         })
-                         .catch((error, exception) => {
-                         $('#proceeding-modal').on('shown.bs.modal', function (e) {
-                         $("#proceeding-modal").modal("hide");
-                         });
-                         $("#proceeding-modal").modal("hide");
-                         let msg = '';
-                         if (error.status === 0) {
-                         msg = 'Not connect.\n Verify Network.';
-                         } else if (error.status == 404) {
-                         msg = 'Requested page not found. [404]';
-                         } else if (error.status == 500) {
-                         msg = 'Internal Server Error [500].';
-                         } else if (exception === 'parsererror') {
-                         msg = 'Requested JSON parse failed.';
-                         } else if (exception === 'timeout') {
-                         msg = 'Time out error.';
-                         } else if (exception === 'abort') {
-                         msg = 'Ajax request aborted.';
-                         } else {
-                         msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                         }
-                         $('#errorDesc').html(msg);
-                         $("#proceeding-error").modal("show");
-                         })
-                         */
-
+                            })
+                        }
+                        return true;
                     },
-                    onEdit: function (_, newSer) {
-                        console.log("Edited"); console.log(newSer);
+                    onDelete: async function (_, deletedObj) {
+                        return await myAjaxRequest(deletedObj, "delete");
                     },
-                    onAdd: function (_, newSer) {
-                        console.log("Added"); console.log(newSer);
+                    onEdit: async function (_, editedObj) {
+                       // return await myAjaxRequest(editedObj, "edit");
+                       await $("#proceeding-modal").modal({ backdrop: 'static', keyboard: false, }).modal("show");                      
+                        function timeout(ms) {
+                            return new Promise(resolve => setTimeout(resolve, ms));
+                        }
+                        await timeout(1000);
+                        $("#proceeding-modal").modal("hide");
+                        if ($("#proceeding-modal").css("display") == "none") {
+                            $('#proceeding-modal').on('shown.bs.modal', function (e) {
+                                $("#proceeding-modal").modal("hide");
+                            })
+                        }
+                        console.log("Edited");console.log( editedObj);
+                        return true;
+                    },
+                    onAdd: async function (_, addedObj) {
+                        await $("#proceeding-modal").modal({ backdrop: 'static', keyboard: false, }).modal("show");                      
+                        function timeout(ms) {
+                            return new Promise(resolve => setTimeout(resolve, ms));
+                        }
+                        await timeout(1000);
+                        $("#proceeding-modal").modal("hide");
+                        if ($("#proceeding-modal").css("display") == "none") {
+                            $('#proceeding-modal').on('shown.bs.modal', function (e) {
+                                $("#proceeding-modal").modal("hide");
+                            })
+                        }
+                          console.log("Added"); console.log(addedObj);
+                        return true;
                     },
                 }
             }

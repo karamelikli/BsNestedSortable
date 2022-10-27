@@ -4,41 +4,47 @@
  * @package BsNestedSortable
  * @copyright MIT
  * @license https://github.com/karamelikli/BsNestedSortable/blob/main/LICENSE
- * @version 1.3.5
+ * @version 1.3.6
  * @link https://github.com/karamelikli/BsNestedSortable
  */
-
+errorAlert = function (error, exception) {
+    let msg = '';   
+    if (error.status === 0) {
+        msg = 'Not connect.\n Verify Network.';
+    } else if (error.status == 404) {
+        msg = 'Requested page not found. [404]';
+    } else if (error.status == 405) {
+        msg = 'Method Not Allowed. [405]';
+    }else if (error.status == 500) {
+        msg = 'Internal Server Error [500].';
+    } else if (exception === 'parsererror') {
+        msg = 'Requested JSON parse failed.';
+    } else if (exception === 'timeout') {
+        msg = 'Time out error.';
+    } else if (exception === 'abort') {
+        msg = 'Ajax request aborted.';
+    } else {
+        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+    }
+    $('#errorDesc').html(msg);
+    $("#proceeding-error").modal("show");
+}
 ajaxRequest = function (ajaxOptions, successFunc, errorFunc) {
     function sendRequest() {
         return new Promise((resolve, reject) => {
-            $.ajax({...ajaxOptions, ...{success: function (data) { resolve(data) },error: function (error, exception) { reject(error, exception) }
+            $.ajax({
+                ...ajaxOptions, ...{
+                    success: function (data) { resolve(data) }, error: function (error, exception) { reject(error, exception) }
                 }
             })
         })
     }
     sendRequest().then((data) => {
-            successFunc(data)
-        })
+        successFunc(data)
+    })
         .catch((error, exception) => {
             errorFunc(error, exception);
-            let msg = '';
-            if (error.status === 0) {
-                msg = 'Not connect.\n Verify Network.';
-            } else if (error.status == 404) {
-                msg = 'Requested page not found. [404]';
-            } else if (error.status == 500) {
-                msg = 'Internal Server Error [500].';
-            } else if (exception === 'parsererror') {
-                msg = 'Requested JSON parse failed.';
-            } else if (exception === 'timeout') {
-                msg = 'Time out error.';
-            } else if (exception === 'abort') {
-                msg = 'Ajax request aborted.';
-            } else {
-                msg = 'Uncaught Error.\n' + jqXHR.responseText;
-            }
-            $('#errorDesc').html(msg);
-            $("#proceeding-error").modal("show");
+            errorAlert(error, exception);
         })
 }
 function BsNestedSortable() {
@@ -54,8 +60,8 @@ function BsNestedSortable() {
             childrenBusSelector: '.children-bus',
             collapseChildren: '.collapseChildren',
             levelPrefix: 'branch-level',
-            maxHeight:40, //px 
-            minHeight:10, // px
+            maxHeight: 40, //px 
+            minHeight: 10, // px
             insertNewButton: '<button type="button" class="btn btn-primary btn-lg btn-block w-100">Insert New Branch</button>',
             imagesUrlPrefix: "",
             icons: {
@@ -207,7 +213,7 @@ function BsNestedSortable() {
             return { distanceX, distanceY };
         },
         getSerialDiff() {
-            const { options: { dataKeys: { id, parent, title, image, description } },serializeOption:{serializeON}, eventsOptions: { excludedObjElms }, serialize } = UInestedSortable;
+            const { options: { dataKeys: { id, parent, title, image, description } }, serializeOption: { serializeON }, eventsOptions: { excludedObjElms }, serialize } = UInestedSortable;
             if (serializeON == false) { return }
             let oldObj = initialSerilized,
                 y = serialize().catObj, deleted = [], added = [], modified = [];
@@ -450,7 +456,6 @@ function BsNestedSortable() {
         jQuerySupplements() {
             const { options } = UInestedSortable;
             const { levelPrefix } = options;
-
             $.fn.extend({
                 getBranchLevel() {
                     if ($(this).length === 0) return 0;
@@ -597,17 +602,17 @@ function BsNestedSortable() {
                     return $siblings;
                 },
                 addIcons() {
-                    const { options: { branchSelector, collapseChildren, icons: {collapse } } } = UInestedSortable;
+                    const { options: { branchSelector, collapseChildren, icons: { collapse } } } = UInestedSortable;
                     $(branchSelector).each(function () {
                         if ($(this).getChildren().length) {
-                            $(this).find(collapseChildren).html( collapse );
+                            $(this).find(collapseChildren).html(collapse);
                         }
                     }
                     );
                 },
                 calculateSiblingDistances() {
                     const {
-                        options: {maxHeight,minHeight, branchSelector, branchPathSelector }, getDistance
+                        options: { maxHeight, minHeight, branchSelector, branchPathSelector }, getDistance
                     } = UInestedSortable;
 
                     $(branchSelector).each(function () {
@@ -630,22 +635,22 @@ function BsNestedSortable() {
                                 const nextBranchLevel = $nextBranch.getBranchLevel() || 1;
                                 const isChild = $nextBranch.length > 0 && nextBranchLevel > level;
                                 if (isChild) {
-                                    $nextBranch.find(branchPathSelector).css('height', maxHeight+'px');
+                                    $nextBranch.find(branchPathSelector).css('height', maxHeight + 'px');
                                 }
                                 if ($nextBranch.length > 0 && nextBranchLevel < level) {
                                     if ($(this).prevBranch().getBranchLevel() < level) {
-                                        $(this).find(branchPathSelector).css('height', maxHeight+minHeight+ 'px');
+                                        $(this).find(branchPathSelector).css('height', maxHeight + minHeight + 'px');
                                     }
                                     if ($(this).prevBranch().getBranchLevel() == level) {
-                                        $(this).find(branchPathSelector).css('height', maxHeight+maxHeight+ 'px');
+                                        $(this).find(branchPathSelector).css('height', maxHeight + maxHeight + 'px');
                                     }
                                 }
                                 if ($(this).prevBranch().getBranchLevel() < level) {
-                                    $(this).find(branchPathSelector).css('height', maxHeight+minHeight+ 'px')
+                                    $(this).find(branchPathSelector).css('height', maxHeight + minHeight + 'px')
                                 }
                             }
                         } else {
-                            $(this).find(branchPathSelector).hide() ;                           
+                            $(this).find(branchPathSelector).hide();
                         }
                     });
                 },
@@ -671,7 +676,7 @@ function BsNestedSortable() {
                         options: { treeSelector, branchSelector, icons: { collapse, expand } },
                     } = UInestedSortable;
                     const $branch = $(this).closest(`${treeSelector} ${branchSelector}`);
-                    const $collapse = $branch.find(".collapseChildren" );
+                    const $collapse = $branch.find(".collapseChildren");
                     if ($collapse.hasClass("expandIcon")) {
                         if (!isChild) { $collapse.removeClass("expandIcon").addClass("collapseIcon").html(collapse) }
                     } else {
@@ -689,10 +694,10 @@ function BsNestedSortable() {
                     $branch.getChildren().each(function () {
                         if (branchVisibility) {
                             $(this).hide();
-                            if (!isChild) { $branch.attr("data-visibility", "hide");}
+                            if (!isChild) { $branch.attr("data-visibility", "hide"); }
                         } else {
                             $(this).show();
-                            if (!isChild) { $branch.attr("data-visibility", "show");  }
+                            if (!isChild) { $branch.attr("data-visibility", "show"); }
                         }
                         if ($(this).getChildren().length) {
                             if ($(this).getChildren().is(":visible") == branchVisibility) {
@@ -705,16 +710,16 @@ function BsNestedSortable() {
                 },
                 updateCollapse() {
                     const {
-                        options: { icons: {  expand } },
+                        options: { icons: { expand } },
                     } = UInestedSortable;
                     const $collapse = $(this).find(".collapseChildren");
                     if ($(this).attr("data-collapsed") == "hide") {
-                        $collapse.removeClass("collapseIcon").addClass("expandIcon").html(expand)  ;
+                        $collapse.removeClass("collapseIcon").addClass("expandIcon").html(expand);
                         console.log($collapse)
                     }
                 }
             });
-        },       
+        },
         updateBranchZIndex() {
             const {
                 options: { treeSelector, branchSelector }
@@ -741,7 +746,7 @@ function BsNestedSortable() {
                 collapseChildren,
                 modal,
                 maxLevel,
-                dataKeys: { id: idAttr, parent: parentAttr, title: titleAttr, description: descriptionAttr, image: imageAttr, },
+                dataKeys: { id: keyId, parent: keyParent, title: keyTitle, description: keyDescription, image: keyImage, },
             } = options;
 
             updateBranchZIndex();
@@ -760,20 +765,21 @@ function BsNestedSortable() {
                 $(modal.ModalDelete + " #IdOfDelete").val($(this).parents(branchSelector).attr("data-" + dataAttributes.id));
                 $(modal.ModalDelete).modal('show');
             });
-            $(modal.ModalDelete + " .Delete").on("click", function () {
-                const id = $(modal.ModalDelete + " #IdOfDelete").val();
-                const $branch = $(treeSelector + ' [data-' + dataAttributes.id + '="' + id + '"]');
+            $(modal.ModalDelete + " .Delete").on("click", async function () {
+                const ThisID = $(modal.ModalDelete + " #IdOfDelete").val();
+                const $branch = $(treeSelector + ' [data-' + dataAttributes.id + '="' + ThisID + '"]');
                 const $descendantsCount = $branch.getDescendants().length;
-                if ($descendantsCount == 0) {
+                const DeletedItems = initialSerilized.filter(item => item[keyId] == ThisID);
+                $(modal.ModalDelete + " .close").click();
+                const deletedReturn = await eventsOptions.onDelete($branch, DeletedItems);
+                if ($descendantsCount == 0 && deletedReturn) {
                     $branch.remove();
                     $(treeSelector).calculateSiblingDistances();
                     updateBranchZIndex();
-                    const newSerialize = getSerialDiff();
-                    eventsOptions.onDelete($branch, newSerialize);
+                    initialSerilized = getSerialDiff().theLastSerializ;;
                 } else {
                     $("#myModalDeleteAlert").modal('show');
                 }
-                $(modal.ModalDelete + " .close").click();
             })
             $(document).on('click', '.add-Icon,.edit-Icon', function () {
                 const $branch = $(this).parents(branchSelector);
@@ -798,7 +804,7 @@ function BsNestedSortable() {
                 $("#parentOfThis").val("");
                 $(modal.id).modal('hide');
             });
-            $(modal.id + " .submit").on("click", function () {
+            $(modal.id + " .submit").on("click", async function () {
                 const IsAddItem = $("#IsAddItem").val();
                 const parID = $("#parentOfThis").val();
                 const $branch = $('*[data-' + dataAttributes.id + '="' + parID + '"]');
@@ -807,37 +813,36 @@ function BsNestedSortable() {
                 const image = $(modal.image).val();
                 if (IsAddItem == "true") {
                     var uid = generateNewId();
-                    const parent_id = $("#parentOfThis").val();
-                    const level = Math.min(maxLevel, parseInt($branch.getBranchLevel()) + 1);
+                    const level = Math.min(maxLevel, parseInt($branch.attr("data-level")) + 1);
                     $lastChild = $branch.getLastChild();
-                    const $element = createBranch({ [idAttr]: uid, [parentAttr]: parent_id, [titleAttr]: title, level: level, [descriptionAttr]: description, [imageAttr]: image });
-                    if ($lastChild.length) {
-                        $lastChild.after($element);
-                    } else {
-                        if ($branch.length) {
-                            $branch.after($element);
+                    const newObj = { [keyId]: uid, [keyParent]: parID, [keyTitle]: title, level: level, [keyDescription]: description, [keyImage]: image };
+                    const $element = createBranch(newObj);
+                    const addedReturn = await eventsOptions.onAdd($element, newObj);
+                    if (addedReturn) {
+                        if ($lastChild.length) {
+                            $lastChild.after($element);
                         } else {
-                            $(treeSelector).html($element);
-                            $(".emptyButton").remove();
+                            if ($branch.length) {
+                                $branch.after($element);
+                            } else {
+                                $(treeSelector).html($element);
+                                $(".emptyButton").remove();
+                            }
                         }
+                        $(treeSelector).addIcons();
+                        $(treeSelector).calculateSiblingDistances();
+                        updateBranchZIndex();
                     }
-                    $(treeSelector).addIcons();
-                    $(treeSelector).calculateSiblingDistances();
-                    updateBranchZIndex();
-                } else {
+                } else { 
+                    const newObj = { [keyId]: parID, [keyParent]: $branch.attr("data-"+dataAttributes.parent), [keyTitle]: title, level: $branch.attr("data-level"), [keyDescription]: description, [keyImage]: image };
+                    await eventsOptions.onEdit($branch,newObj  ); 
                     $branch.find(".branch-title").text(title)
                     $branch.find(".desc.d-none").html(description);
                     $branch.find(".branch-desc").html(description.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"));
                     $branch.find(".branch-leftdivImage img").attr("src", image);
                 }
-                $(modal.id + " .close").click();
-                const newSerialize = getSerialDiff();
-
-                if (IsAddItem == "true") {
-                    eventsOptions.onAdd($('*[data-' + dataAttributes.id + '="' + uid + '"]'), newSerialize);
-                } else {
-                    eventsOptions.onEdit($branch, newSerialize);
-                }
+                $(modal.id + " .close").click();              
+                initialSerilized = getSerialDiff().theLastSerializ;
             });
             $(this).calculateSiblingDistances();
             const updatePlaceholder = (placeholder, level) => {
@@ -983,7 +988,7 @@ function BsNestedSortable() {
     return UInestedSortable;
 }
 jQuery.fn.BsNestedSortable = function (input) {
-    data = (typeof input =="object" && input.hasOwnProperty("data")) ? input.data : data; // check data was put in the option or not! if not data was defined outside of input object
+    data = (typeof input == "object" && input.hasOwnProperty("data")) ? input.data : data; // check data was put in the option or not! if not data was defined outside of input object
     const nSortable = new BsNestedSortable();
     let treeSelector = "";
     if ($(this[0]).attr("id")) {
@@ -993,14 +998,14 @@ jQuery.fn.BsNestedSortable = function (input) {
         treeSelector += "." + $.trim($(this[0]).attr("class")).replace(/\s/gi, ".");
     }
     nSortable.options = { ...nSortable.options, ...{ treeSelector: treeSelector } }
-    if (typeof input =="object" && input.hasOwnProperty("options")) {
+    if (typeof input == "object" && input.hasOwnProperty("options")) {
         nSortable.options = { ...nSortable.options, ...input.options };
     }
     $(this[0]).html(nSortable.MakeContents(data));
-    if (typeof input =="object" && typeof input.serializeOption !== "undefined") {
+    if (typeof input == "object" && typeof input.serializeOption !== "undefined") {
         nSortable.serializeOption = { ...nSortable.serializeOption, ...input.serializeOption, ...{ serializeON: true } }
     }
-    if (typeof input =="object" && typeof input.eventsOptions !== "undefined") {
+    if (typeof input == "object" && typeof input.eventsOptions !== "undefined") {
         // serialize before events
         nSortable.serializeOption = { ...nSortable.serializeOption, ...{ serializeON: true } }
         nSortable.eventsOptions = { ...nSortable.eventsOptions, ...input.eventsOptions }
