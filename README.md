@@ -1,4 +1,5 @@
 
+
 # Bootstrap Nested Sortable Tree
 
   
@@ -61,6 +62,7 @@ const data = [
     id: 2,
     parent_id: 1,
     title: 'Branch 2',
+    myorder:2,
     img: 'images/profile.jpg'
     },
        ];
@@ -83,7 +85,8 @@ $("#tree").BsNestedSortable(
        parent: 'myparent_id',
        title: 'mytitle',
        description: 'mydesc',
-       image: 'myimage'
+       image: 'myimage',
+       order:'myorder'
      },
    }
 }
@@ -208,9 +211,6 @@ $("#tree").BsNestedSortable(
 |depth| 30 | The Depth of a child branch. If you change the depth then you have to update the CSS of the `.branch-level-X` classes. See the `treeSortable.css` for more references.|
 |rootID|0|The root ID. This is crucial for reordering the data. Both string and numeric values are compatible.|
 |dataAttributes|{id: 'id',parent: 'parent',title: 'title',}|Attibutes in the produced tags.  *data-title* etc|
-|dataKeys|{id:'id',parent:'parent_id', title:'title', description:'description',image:'img'}|Change these values based on your row data structure|
+|dataKeys|{id:'id',parent:'parent_id', title:'title', description:'description',image:'img',order:myorder}|Change these values based on your row data structure|
 |eventsOptions| { <br />&nbsp;&nbsp;onComplete: function () { }, <br />&nbsp;&nbsp;onDelete: function () { }, <br />&nbsp;&nbsp;onEdit: function () { }, <br /> &nbsp;&nbsp;onAdd: function () { }, <br />&nbsp;&nbsp;excludedObjElms: [],<br />} |Events' functions.|
 |serializeOption|    {<br />&nbsp;&nbsp;serializeON: false,<br />&nbsp;&nbsp;method: "JSON",<br />&nbsp;&nbsp;call: "html",<br />&nbsp;&nbsp;outPuts: {<br />&nbsp;&nbsp;&nbsp;&nbsp;catObj: "#catObj", <br />&nbsp;&nbsp;&nbsp;&nbsp;parentArr: "#parentArr", <br />&nbsp;&nbsp;&nbsp;&nbsp;childrenArr: "#childrenArr",<br />&nbsp;&nbsp;&nbsp;&nbsp; Hierarchy: "#hierarchy", <br />&nbsp;&nbsp;&nbsp;&nbsp;minHierarchy: "#minHierarchy", <br />&nbsp;&nbsp;&nbsp;&nbsp;           allParentsArr: "#allParentsArr",<br />&nbsp;&nbsp;&nbsp;&nbsp;        allChildrenArr: "#allChildrenArr"  <br />&nbsp;&nbsp;}<br />&nbsp;&nbsp;}| - method optons are JSON,alert,console,asVar<br /> - call optons are :    html,val,text<br /> -outPuts options are as follow <br /> - - catObj, the places which will have all categories<br /> - - parentArr ,  parents array<br /> - - childrenArr,    children array<br /> - - Hierarchy, expanded hierarchical array <br /> - -minHierarchy,  minimized hierarchical array <br /> - - allParentsArr,   All of parents<br /> - - allChildrenArr,  all of children |
-
-
-
