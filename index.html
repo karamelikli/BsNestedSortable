@@ -65,7 +65,7 @@
                 parent_id: 3,
                 title: 'Branch 4',
                 description: '',
-                myorder:2,
+                myorder: 2,
 
             },
             {
@@ -94,7 +94,7 @@
                 parent_id: 3,
                 title: 'Branch 9',
                 description: '',
-                myorder:1
+                myorder: 1
 
             },
             {
@@ -170,8 +170,15 @@
                         title: 'title',
                         description: 'description',
                         image: 'img',
-                        order:"myorder"
+                        order: "myorder"
                     }
+                },
+                language: {
+                    createTheFirstBranch: "Insert New Branch and Make new data",
+                    newItem: "New Item created",
+                    editBranch: "Edit this Branch",
+                    addBranch: "Add a new child here",
+                    removeBranch: "Remove the Branch"
                 },
                 serializeOption: {
                     method: "JSON", // JSON alert console asVar
@@ -267,7 +274,9 @@
                     <h3 class="text-white mb-15" id="myEroorLabel"><i class="fa fa-exclamation-triangle"></i> ERROR!
                     </h3>
                     <span>proceeding Failed.</span>
-                    <p><div id="errorDesc"></div></p>
+                    <p>
+                    <div id="errorDesc"></div>
+                    </p>
                     <p></p>
                     <button type="button" class="btn btn-light close" data-dismiss="modal"
                         data-bs-dismiss="modal">Ok</button>

@@ -1,5 +1,6 @@
 
 
+
 # Bootstrap Nested Sortable Tree
 
   
@@ -210,6 +211,7 @@ $("#tree").BsNestedSortable(
 |maxLevel| 10 | The maximum level the tree could go. For example, if you set the `maxLevel` to `2` then the branch could have maximum `.branch-level-2`.|
 |depth| 30 | The Depth of a child branch. If you change the depth then you have to update the CSS of the `.branch-level-X` classes. See the `treeSortable.css` for more references.|
 |rootID|0|The root ID. This is crucial for reordering the data. Both string and numeric values are compatible.|
+|language|``` {createTheFirstBranch: "Insert New Branch", newItem: "New Item", editBranch: "Edit Branch",  addBranch: "Add a new child",         removeBranch: "Remove Branch"  }```  |Change the texts by these variables|
 |dataAttributes|{id: 'id',parent: 'parent',title: 'title',}|Attibutes in the produced tags.  *data-title* etc|
 |dataKeys|{id:'id',parent:'parent_id', title:'title', description:'description',image:'img',order:myorder}|Change these values based on your row data structure|
 |eventsOptions| { <br />&nbsp;&nbsp;onComplete: function () { }, <br />&nbsp;&nbsp;onDelete: function () { }, <br />&nbsp;&nbsp;onEdit: function () { }, <br /> &nbsp;&nbsp;onAdd: function () { }, <br />&nbsp;&nbsp;excludedObjElms: [],<br />} |Events' functions.|
