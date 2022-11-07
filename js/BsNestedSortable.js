@@ -4,7 +4,7 @@
  * @package BsNestedSortable
  * @copyright MIT
  * @license https://github.com/karamelikli/BsNestedSortable/blob/main/LICENSE
- * @version 1.4.1
+ * @version 1.4.2
  * @link https://github.com/karamelikli/BsNestedSortable
  */
 errorAlert = function (error, exception) {
@@ -62,7 +62,7 @@ function BsNestedSortable() {
             levelPrefix: 'branch-level',
             maxHeight: 40, //px 
             minHeight: 10, // px
-            insertNewButton: '<button type="button" class="btn btn-primary btn-lg btn-block w-100">Insert New Branch</button>',
+            insertNewButton: '<button type="button" class="btn btn-primary btn-lg btn-block w-100">{insertText}</button>',
             imagesUrlPrefix: "",
             icons: {
                 remove: '<i class="far fa-trash-alt"></i>',
@@ -92,8 +92,15 @@ function BsNestedSortable() {
                 title: 'title',
                 description: 'description',
                 image: 'img',
-                order:'order'
+                order: 'order'
             },
+        },
+        language: {
+            createTheFirstBranch: "Insert New Branch",
+            newItem: "New Item",
+            editBranch: "Edit Branch",
+            addBranch: "Add a new child",
+            removeBranch: "Remove Branch"
         },
         serializeOption: {
             serializeON: false,
@@ -125,9 +132,9 @@ function BsNestedSortable() {
         },
         prepareData(data) {
             const { options: {
-                dataKeys: { id, parent, title, description, image ,order},
+                dataKeys: { id, parent, title, description, image, order },
                 rootID, maxLevel,
-            } } = UInestedSortable;
+            }, language } = UInestedSortable;
             let rearrangedData = [];
             let levelArr = [];
             const rearrange = function (i) {
@@ -197,7 +204,7 @@ function BsNestedSortable() {
                     data[key][image] = "";
                 }
                 if (typeof data[key][title] == "undefined") {
-                    data[key][title] = "temp title";
+                    data[key][title] = language.newItem;
                 }
                 if (typeof data[key][parent] == "undefined") {
                     data[key][parent] = rootID;
@@ -208,9 +215,11 @@ function BsNestedSortable() {
             return rearrangedData
         },
         MakeContents(data) {
-            const { options: { treeSelector, insertNewButton, rootID, modal } } = UInestedSortable;
+            const { options: { treeSelector, insertNewButton, rootID, modal }, language } = UInestedSortable;
             if (data.length < 1 || typeof data.length != "number") {
-                $(treeSelector).before($(insertNewButton).addClass("emptyButton").click(function () {
+                const newButton = insertNewButton.replace(/\{insertText\}/, language.createTheFirstBranch)
+
+                $(treeSelector).before($(newButton).addClass("emptyButton").click(function () {
                     $("#parentOfThis").val(rootID);
                     $("#IsAddItem").val(true)
                     $(modal.id).modal('show');
@@ -441,11 +450,11 @@ function BsNestedSortable() {
         createBranch(thisObj) {
             const { options: { branchSelector, branchPathSelector, childrenBusSelector, levelPrefix, collapseChildren,
                 icons: { add, edit, remove },
-                dataKeys: { id: idKey, parent: parentKey,order:orderKey, title: titleKey, description: descKey, image: imageKey },
+                dataKeys: { id: idKey, parent: parentKey, order: orderKey, title: titleKey, description: descKey, image: imageKey },
                 dataAttributes: { id: idAttr, parent: parentAttr },
                 imagesUrlPrefix,
-            }, cleanSelector, } = UInestedSortable;
-            const { [idKey]: id, "level": level,[orderKey] : order, [parentKey]: parent_id, [titleKey]: title, [imageKey]: imagePath } = thisObj;
+            }, cleanSelector, language } = UInestedSortable;
+            const { [idKey]: id, "level": level, [orderKey]: order, [parentKey]: parent_id, [titleKey]: title, [imageKey]: imagePath } = thisObj;
             let { [descKey]: description } = thisObj, descriptionTxt = "";
             if (description) {
                 descriptionTxt = description.replace(/(<([^>]+)>)/ig, "");
@@ -469,9 +478,9 @@ function BsNestedSortable() {
                             <div class="branch-desc">${descriptionTxt}</div>
                             <div class="desc d-none" style="display:none"  >${description}</div>
                             <div class ="iconsDiv">
-                                <button type="button" class="button edit-Icon" title="Edit Branch">${edit}</button>
-                                <button type="button" class="button add-Icon" title="Add a new child">${add}</button>
-                                <button type="button" class="button delete-Icon" title="Remove Branch">${remove}</button>
+                                <button type="button" class="button edit-Icon" title="${language.editBranch}">${edit}</button>
+                                <button type="button" class="button add-Icon" title="${language.addBranch}">${add}</button>
+                                <button type="button" class="button delete-Icon" title="${language.removeBranch}">${remove}</button>
                             </div>                  
                         </div>             
                         <div class="${cleanSelector(childrenBusSelector)}"></div>
@@ -757,7 +766,7 @@ function BsNestedSortable() {
         },
         initSorting() {
             const { options, eventsOptions, pxToNumber, numberToPx, updateBranchZIndex, serialize, serializeOption, getSerialDiff, generateNewId,
-                createBranch, } = UInestedSortable;
+                createBranch, language } = UInestedSortable;
             const {
                 treeSelector,
                 dragHandlerSelector,
@@ -848,7 +857,7 @@ function BsNestedSortable() {
                 const IsAddItem = $("#IsAddItem").val();
                 const parID = $("#parentOfThis").val();
                 const $branch = $('*[data-' + dataAttributes.id + '="' + parID + '"]');
-                const title = $(modal.name).val() ? $(modal.name).val() : "New Item";
+                const title = $(modal.name).val() ? $(modal.name).val() : language.newItem;
                 const description = $(modal.description).val();
                 const image = $("#oldImgName", modal.id).val()
                 const oldNameVal = $("#oldNameOfBranch").val();
@@ -1081,22 +1090,27 @@ jQuery.fn.BsNestedSortable = function (input) {
     if ($(this[0]).attr("class")) {
         treeSelector += "." + $.trim($(this[0]).attr("class")).replace(/\s/gi, ".");
     }
-   nSortable.options = { ...nSortable.options, ...{ treeSelector: treeSelector } }
-    if (typeof input == "object" && input.hasOwnProperty("options")) {
-        if (typeof input.options  == "object" && input.options.hasOwnProperty("dataKeys")) {
-        input.options.dataKeys = { ...nSortable.options.dataKeys, ...input.options.dataKeys };
+    nSortable.options = { ...nSortable.options, ...{ treeSelector: treeSelector } };
+    if (typeof input == "object") {
+        if (input.hasOwnProperty("options")) {
+            if (typeof input.options == "object" && input.options.hasOwnProperty("dataKeys")) {
+                input.options.dataKeys = { ...nSortable.options.dataKeys, ...input.options.dataKeys };
+            }
+            nSortable.options = { ...nSortable.options, ...input.options };
         }
-        nSortable.options = { ...nSortable.options, ...input.options };       
-    }    
+        if (typeof input.language !== "undefined") {
+            nSortable.language = { ...nSortable.language, ...input.language }
+        }
+        if (typeof input.serializeOption !== "undefined") {
+            nSortable.serializeOption = { ...nSortable.serializeOption, ...input.serializeOption, ...{ serializeON: true } }
+        }
+        if (typeof input.eventsOptions !== "undefined") {
+            // serialize before events
+            nSortable.serializeOption = { ...nSortable.serializeOption, ...{ serializeON: true } }
+            nSortable.eventsOptions = { ...nSortable.eventsOptions, ...input.eventsOptions }
+        }
+    }
     $(this[0]).html(nSortable.MakeContents(data));
-    if (typeof input == "object" && typeof input.serializeOption !== "undefined") {
-        nSortable.serializeOption = { ...nSortable.serializeOption, ...input.serializeOption, ...{ serializeON: true } }
-    }
-    if (typeof input == "object" && typeof input.eventsOptions !== "undefined") {
-        // serialize before events
-        nSortable.serializeOption = { ...nSortable.serializeOption, ...{ serializeON: true } }
-        nSortable.eventsOptions = { ...nSortable.eventsOptions, ...input.eventsOptions }
-    }
     nSortable.run();
     return this;
 }
