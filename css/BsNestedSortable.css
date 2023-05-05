@@ -202,3 +202,4 @@
  .collapseChildren:hover {
     transform: scale(1.5);
 }
+li.list-group-item {padding:0}

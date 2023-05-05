@@ -464,7 +464,7 @@ function BsNestedSortable() {
             }
             const image = imagePath ? "<img src='" + imagesUrlPrefix + imagePath + "' />" : "";
             return `
-                    <li class="${cleanSelector(
+                    <li class="list-group-item ${cleanSelector(
                 branchSelector
             )} ${levelPrefix}-${level}" data-${idAttr}="${id}" data-${parentAttr}="${parent_id}" data-order="${order}" data-level="${level}">            
                                     <span class="${cleanSelector(branchPathSelector)}"></span>
